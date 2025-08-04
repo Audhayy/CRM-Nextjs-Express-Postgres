@@ -1,0 +1,119 @@
+# === FRONTEND ===
+crm-frontend/node_modules/
+crm-frontend/.next/
+crm-frontend/out/
+crm-frontend/.env
+crm-frontend/.env.local
+crm-frontend/.env.development.local
+crm-frontend/.env.test.local
+crm-frontend/.env.production.local
+crm-frontend/build/
+crm-frontend/dist/
+crm-frontend/coverage/
+crm-frontend/.vscode/
+crm-frontend/.idea/
+crm-frontend/.swc/
+
+# === BACKEND ===
+crm-backend/node_modules/
+crm-backend/build/
+crm-backend/dist/
+crm-backend/tmp/
+crm-backend/temp/
+crm-backend/logs/
+crm-backend/.env
+crm-backend/.env.local
+crm-backend/.env.development.local
+crm-backend/.env.test.local
+crm-backend/.env.production.local
+crm-backend/.vscode/
+crm-backend/.idea/
+crm-backend/coverage/
+crm-backend/pids/
+crm-backend/*.pid
+crm-backend/*.pid.lock
+crm-backend/*.tsbuildinfo
+
+# === DATABASE ===
+crm-backend/*.db
+crm-backend/*.sqlite
+crm-backend/*.sqlite3
+crm-backend/database/
+crm-backend/migrations/
+
+# === TypeScript ===
+crm-backend/*.tsbuildinfo
+crm-frontend/*.tsbuildinfo
+crm-frontend/next-env.d.ts
+
+# === Testing ===
+crm-frontend/.nyc_output
+crm-backend/.nyc_output
+crm-frontend/coverage/
+crm-backend/coverage/
+crm-frontend/jest-coverage/
+crm-backend/jest-coverage/
+
+# === Logs ===
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# === Package Managers ===
+.pnp
+.pnp.js
+yarn.lock
+package-lock.json
+
+# === OS Generated Files ===
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# === IDE/Editor ===
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# === Temporary Files ===
+*.tmp
+*.temp
+.tmp/
+.temp/
+
+# === Environment Files ===
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# === Documentation ===
+NOTES.md
+.cursor
+nextjs-rules.mdc
+.cursorrules
+
+# === Build Artifacts ===
+build/
+dist/
+out/
+
+# === Cache ===
+.cache/
+.parcel-cache/
+.eslintcache
+
+# === Misc ===
+*.tgz
+*.tar.gz 
