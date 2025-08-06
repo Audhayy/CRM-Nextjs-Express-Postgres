@@ -37,7 +37,6 @@ export default function HomePage() {
     )
   }
 
-  // Fallback in case redirect doesn't work
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="text-center">
