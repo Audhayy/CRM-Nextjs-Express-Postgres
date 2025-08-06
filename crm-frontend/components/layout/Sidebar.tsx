@@ -43,6 +43,9 @@ export default function Sidebar() {
     return pathname === href;
   };
 
+  // Determine which navigation to show based on user role
+  const navigation = user?.role === 'admin' ? adminNavigation : userNavigation;
+
   return (
     <>
       {/* Mobile sidebar */}
@@ -59,7 +62,7 @@ export default function Sidebar() {
             </button>
           </div>
           <nav className="flex-1 space-y-1 px-2 py-4">
-            {(user?.role === 'admin' ? adminNavigation : userNavigation).map((item) => {
+            {navigation.map((item) => {
               const Icon = item.icon;
               return (
                 <Link
@@ -88,7 +91,7 @@ export default function Sidebar() {
             <h1 className="text-xl font-bold text-gray-900">L2 CRM</h1>
           </div>
           <nav className="flex-1 space-y-1 px-2 py-4">
-            {(user?.role === 'admin' ? adminNavigation : userNavigation).map((item) => {
+            {navigation.map((item) => {
               const Icon = item.icon;
               return (
                 <Link

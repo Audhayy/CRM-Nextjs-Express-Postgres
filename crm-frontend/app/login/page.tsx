@@ -126,18 +126,6 @@ export default function LoginPage() {
               )}
             </button>
           </div>
-
-          <div className="text-center">
-            <p className="text-sm text-gray-600">
-              Demo Credentials:
-            </p>
-            <p className="text-xs text-gray-500 mt-1">
-              Admin: admin@crm.com / admin123
-            </p>
-            <p className="text-xs text-gray-500">
-              User: user@crm.com / user123
-            </p>
-          </div>
         </form>
       </div>
     </div>

@@ -1,7 +1,7 @@
 const express = require('express');
 const { Op } = require('sequelize');
 const { Customer, Lead, Task, Interaction, sequelize } = require('../models');
-const { authenticateToken, requireAdmin } = require('../middleware/auth');
+const { authenticateToken, requireAdmin, requireUser } = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -24,10 +24,9 @@ const errorResponse = (res, error, code = 'ERROR', status = 500) => {
 
 // Apply authentication to all routes
 router.use(authenticateToken);
-router.use(requireAdmin);
 
-// GET /api/reports/dashboard - Get dashboard statistics
-router.get('/dashboard', async (req, res) => {
+// GET /api/reports/dashboard - Get dashboard statistics (Admin only)
+router.get('/dashboard', requireAdmin, async (req, res) => {
   try {
     // Get customer statistics
     const customerStats = await Customer.findAll({
@@ -107,8 +106,89 @@ router.get('/dashboard', async (req, res) => {
   }
 });
 
-// GET /api/reports/conversion - Get conversion rate data
-router.get('/conversion', async (req, res) => {
+// GET /api/reports/dashboard-stats - Get dashboard statistics (Both admin and user)
+router.get('/dashboard-stats', requireUser, async (req, res) => {
+  try {
+    // Get customer statistics
+    const customerStats = await Customer.findAll({
+      attributes: [
+        [sequelize.fn('COUNT', sequelize.col('id')), 'total'],
+        [sequelize.fn('COUNT', sequelize.literal('CASE WHEN "createdAt" >= date(\'now\', \'-30 days\') THEN 1 END')), 'newThisMonth']
+      ],
+      raw: true
+    });
+
+    // Get lead statistics
+    const leadStats = await Lead.findAll({
+      attributes: [
+        [sequelize.fn('COUNT', sequelize.col('id')), 'total'],
+        [sequelize.fn('SUM', sequelize.col('value')), 'totalValue'],
+        [sequelize.fn('COUNT', sequelize.literal('CASE WHEN stage = \'closed\' THEN 1 END')), 'closed']
+      ],
+      raw: true
+    });
+
+    // Get task statistics
+    const taskStats = await Task.findAll({
+      attributes: [
+        [sequelize.fn('COUNT', sequelize.col('id')), 'total'],
+        [sequelize.fn('COUNT', sequelize.literal('CASE WHEN status = \'completed\' THEN 1 END')), 'completed'],
+        [sequelize.fn('COUNT', sequelize.literal('CASE WHEN status = \'pending\' THEN 1 END')), 'pending']
+      ],
+      raw: true
+    });
+
+    // Get pipeline statistics
+    const pipelineStats = await Lead.findAll({
+      attributes: [
+        'stage',
+        [sequelize.fn('COUNT', sequelize.col('id')), 'count']
+      ],
+      group: ['stage'],
+      raw: true
+    });
+
+    // Format pipeline data
+    const pipeline = {
+      lead: 0,
+      qualified: 0,
+      proposal: 0,
+      closed: 0
+    };
+
+    pipelineStats.forEach(stat => {
+      pipeline[stat.stage] = parseInt(stat.count);
+    });
+
+    // Calculate conversion rate
+    const totalLeads = leadStats[0]?.total || 0;
+    const closedLeads = leadStats[0]?.closed || 0;
+    const conversionRate = totalLeads > 0 ? (closedLeads / totalLeads) * 100 : 0;
+
+    successResponse(res, {
+      customers: {
+        total: parseInt(customerStats[0]?.total || 0),
+        newThisMonth: parseInt(customerStats[0]?.newThisMonth || 0)
+      },
+      leads: {
+        total: parseInt(leadStats[0]?.total || 0),
+        conversionRate: parseFloat(conversionRate.toFixed(2)),
+        totalValue: parseFloat(leadStats[0]?.totalValue || 0)
+      },
+      tasks: {
+        total: parseInt(taskStats[0]?.total || 0),
+        completed: parseInt(taskStats[0]?.completed || 0),
+        pending: parseInt(taskStats[0]?.pending || 0)
+      },
+      pipeline
+    });
+  } catch (error) {
+    errorResponse(res, error, 'DATABASE_ERROR');
+  }
+});
+
+// GET /api/reports/conversion - Get conversion rate data (Admin only)
+router.get('/conversion', requireAdmin, async (req, res) => {
   try {
     const { period = 'month' } = req.query;
 

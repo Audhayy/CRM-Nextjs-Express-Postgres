@@ -29,7 +29,7 @@ export default function DashboardPage() {
 
   const fetchDashboardStats = async () => {
     try {
-      const response = await api.get('/reports/dashboard')
+      const response = await api.get('/reports/dashboard-stats')
       console.log('Dashboard stats response:', response.data)
       setStats(response.data.data)
     } catch (error: any) {

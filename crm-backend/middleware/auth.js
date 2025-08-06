@@ -14,7 +14,7 @@ const authenticateToken = async (req, res, next) => {
       });
     }
 
-    const decoded = jwt.verify(token, 'your-super-secret-jwt-key-here');
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-super-secret-jwt-key-here');
     const user = await User.findByPk(decoded.userId);
     
     if (!user) {
